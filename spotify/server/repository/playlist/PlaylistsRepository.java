@@ -1,0 +1,22 @@
+package bg.sofia.uni.fmi.mjt.spotify.server.repository.playlist;
+
+import bg.sofia.uni.fmi.mjt.spotify.exception.checked.LoadingDataFromFileException;
+import bg.sofia.uni.fmi.mjt.spotify.server.model.Playlist;
+import bg.sofia.uni.fmi.mjt.spotify.server.repository.BaseRepositoryImpl;
+import java.nio.file.Path;
+
+import static bg.sofia.uni.fmi.mjt.spotify.validator.Validator.validateFilePath;
+
+public class PlaylistsRepository extends BaseRepositoryImpl<Playlist> {
+
+    public PlaylistsRepository() {
+        super();
+    }
+
+    @Override
+    public void loadDataFrom(Path filePath) throws LoadingDataFromFileException {
+        validateFilePath(filePath);
+        loadDataWithCurrentClass(filePath, Playlist.class);
+    }
+
+}
