@@ -60,6 +60,6 @@ public class Song {
 
     @Override
     public String toString() {
-        return "Title: " + title + ", Singer: " + artist;
+        return "Title: " + title + ", Singer: " + artist + System.lineSeparator();
     }
 }
