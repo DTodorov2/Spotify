@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.mjt.spotify.server;
 
 import bg.sofia.uni.fmi.mjt.spotify.command.CommandExecutor;
 import bg.sofia.uni.fmi.mjt.spotify.data.file.FileDataSaver;
+import bg.sofia.uni.fmi.mjt.spotify.exception.checked.ChannelCommunicationException;
 import bg.sofia.uni.fmi.mjt.spotify.exception.checked.ClosingClientChannelException;
 import bg.sofia.uni.fmi.mjt.spotify.exception.checked.HandlingSelectionKeyException;
 import bg.sofia.uni.fmi.mjt.spotify.exception.checked.LoadingDataFromFileException;
@@ -145,7 +146,7 @@ public class SpotifyServer {
             } else if (key.isAcceptable()) {
                 handleAcceptableKey(selector, key);
             }
-        } catch (IOException e) {
+        } catch (IOException | ChannelCommunicationException e) {
             throw new HandlingSelectionKeyException("Unable to process the selection key", e);
         }
     }
@@ -160,7 +161,7 @@ public class SpotifyServer {
         }
     }
 
-    private void handleReadableKey(SelectionKey key) throws IOException {
+    private void handleReadableKey(SelectionKey key) throws IOException, ChannelCommunicationException {
         SocketChannel clientChannel = (SocketChannel) key.channel();
         String clientInput = getClientInput(clientChannel);
         if (clientInput == null) {
