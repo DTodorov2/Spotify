@@ -27,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 
 import static bg.sofia.uni.fmi.mjt.spotify.validator.Validator.checkArgumentNotNull;
+import static bg.sofia.uni.fmi.mjt.spotify.validator.Validator.validateString;
 
 public class SpotifyServer {
     private static final int PORT = 8080;
@@ -87,6 +88,8 @@ public class SpotifyServer {
     }
 
     private void startServer(ServerSocketChannel serverSocketChannel) throws IOException, ServerConfigurationException {
+        checkArgumentNotNull(serverSocketChannel, "server socket channel");
+
         Selector selector = Selector.open();
         this.selector = selector;
         configureServerSocketChannel(serverSocketChannel, selector);
@@ -97,6 +100,9 @@ public class SpotifyServer {
 
     private void configureServerSocketChannel(ServerSocketChannel serverChannel, Selector selector)
             throws ServerConfigurationException {
+        checkArgumentNotNull(serverChannel, "server channel");
+        checkArgumentNotNull(selector, "selector");
+
         try {
             serverChannel.bind(new InetSocketAddress(HOST, PORT));
             serverChannel.configureBlocking(false);
@@ -140,6 +146,8 @@ public class SpotifyServer {
     }
 
     private void handleKey(SelectionKey key) throws HandlingSelectionKeyException {
+        checkArgumentNotNull(key, "selection key");
+
         try {
             if (key.isReadable()) {
                 handleReadableKey(key);
@@ -152,6 +160,9 @@ public class SpotifyServer {
     }
 
     private void handleAcceptableKey(Selector selector, SelectionKey key) throws IOException {
+        checkArgumentNotNull(selector, "selector");
+        checkArgumentNotNull(key, "selection key");
+
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
         SocketChannel socketChannel = serverSocketChannel.accept();
 
@@ -162,40 +173,30 @@ public class SpotifyServer {
     }
 
     private void handleReadableKey(SelectionKey key) throws IOException, ChannelCommunicationException {
+        checkArgumentNotNull(key, "selection key");
+
         SocketChannel clientChannel = (SocketChannel) key.channel();
         String clientInput = getClientInput(clientChannel);
-        if (clientInput == null) {
-            return;
-        }
+//        if (clientInput == null) {
+//            //toi tuka zatvarq client connection-a, ama shto
+//            return;
+//        }
 
-        if (clientInput.equals("disconnect")) {
-            displayMessage("Client is disconnecting...");
-            closeClientChannel(clientChannel, key);
-            return;
-        }
+        //trqq napravq komand z disconnect
+//        if (clientInput.equalsIgnoreCase("disconnect")) {
+//            displayMessage("Client with email: " + key.attachment() + " is disconnecting...");
+//            closeClientChannel(clientChannel, key);
+//            return;
+//        }
 
         //System.out.println(clientInput);
         String output = commandExecutor.execute(clientInput);
         writeClientOutput(clientChannel, output);
     }
 
-    private void closeClientChannel(SocketChannel channel, SelectionKey key) {
-        User loggedUser = serverResources.getLoggedUser();
-        if (loggedUser != null) {
-            //dolniq method e ako srteam-va muzika, da q spra
-            //setLogoutState(loggedUser, serverState);
-        }
-
-        try {
-            channel.close();
-        } catch (IOException e) {
-            throw new UnsuccessfulChannelClosingException("Unable to close the client's socket channel!", e);
-        }
-
-        key.cancel();
-    }
-
     private String getClientInput(SocketChannel clientChannel) throws IOException {
+        checkArgumentNotNull(clientChannel, "client channel");
+
         buffer.clear();
 
         int readBytes = clientChannel.read(buffer);
@@ -213,6 +214,9 @@ public class SpotifyServer {
     }
 
     private void writeClientOutput(SocketChannel clientChannel, String output) throws IOException {
+        validateString(output, "output string");
+        checkArgumentNotNull(clientChannel, "client channel");
+
         buffer.clear();
         buffer.put(output.getBytes());
         buffer.flip();
