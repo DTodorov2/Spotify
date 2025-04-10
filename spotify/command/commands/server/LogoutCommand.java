@@ -1,0 +1,29 @@
+package bg.sofia.uni.fmi.mjt.spotify.command.commands.server;
+
+import bg.sofia.uni.fmi.mjt.spotify.server.model.User;
+import bg.sofia.uni.fmi.mjt.spotify.server.resources.ServerResources;
+
+public class LogoutCommand extends ServerCommand {
+
+    private static final int EXPECTED_INPUT_LENGTH = 0;
+
+    public LogoutCommand(String[] arguments, ServerResources serverResources) {
+        super(arguments, EXPECTED_INPUT_LENGTH, serverResources);
+    }
+
+    @Override
+    public String execute() {
+        User loggedUser = serverResources.getLoggedUser();
+        if (loggedUser == null) {
+            return "You are not logged in!";
+        }
+
+        //za muzikata
+//        if (userToLogout.isUserCurrentlyStreaming()) {
+//            userToLogout.getAudioStreamSender().stop();
+//        }
+        loggedUser.setLoggedIn(false);
+        serverResources.getSelectionKey().attach(null);
+        return "You logged out successfully!";
+    }
+}
