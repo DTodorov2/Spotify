@@ -29,6 +29,7 @@ public class SpotifyClient {
             clientChannel.connect(new InetSocketAddress(SERVER_HOST, SERVER_PORT));
             this.clientResources.setClientChannel(clientChannel);
             runClientLoop();
+            clientResources.getExecutor().shutdown();
         } catch (IOException e) {
             System.out.println("Unable to connect to the server!");
         }
