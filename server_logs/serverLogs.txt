@@ -1,0 +1,8 @@
+[2025-04-12T17:30:28.133912700] 
+bg.sofia.uni.fmi.mjt.spotify.exception.checked.HandlingSelectionKeyException: Unable to process a selection key 
+	at bg.sofia.uni.fmi.mjt.spotify.server.SpotifyServer.handleKey(SpotifyServer.java:157)
+	at bg.sofia.uni.fmi.mjt.spotify.server.SpotifyServer.processReadyKeys(SpotifyServer.java:135)
+	at bg.sofia.uni.fmi.mjt.spotify.server.SpotifyServer.runServerLoop(SpotifyServer.java:119)
+	at bg.sofia.uni.fmi.mjt.spotify.server.SpotifyServer.startServer(SpotifyServer.java:96)
+	at bg.sofia.uni.fmi.mjt.spotify.server.SpotifyServer.start(SpotifyServer.java:63)
+	at bg.sofia.uni.fmi.mjt.spotify.server.StartServer.main(StartServer.java:5)
