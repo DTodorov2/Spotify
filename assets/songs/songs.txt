@@ -1,0 +1,4 @@
+The songs in the app will be here. (wav format and the title must be without spaces).
+Example:
+StandStill.wav
+BillieJean.wav
