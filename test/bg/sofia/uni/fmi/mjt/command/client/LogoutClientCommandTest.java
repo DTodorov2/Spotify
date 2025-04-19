@@ -1,0 +1,82 @@
+package bg.sofia.uni.fmi.mjt.command.client;
+
+import bg.sofia.uni.fmi.mjt.spotify.client.audio.AudioClient;
+import bg.sofia.uni.fmi.mjt.spotify.client.resources.ClientResources;
+import bg.sofia.uni.fmi.mjt.spotify.command.commands.client.LogoutClientCommand;
+import bg.sofia.uni.fmi.mjt.spotify.data.channel.ChannelDataLoader;
+import bg.sofia.uni.fmi.mjt.spotify.data.channel.ChannelDataWriter;
+import bg.sofia.uni.fmi.mjt.spotify.exception.checked.ChannelCommunicationException;
+import bg.sofia.uni.fmi.mjt.spotify.exception.checked.DeserializationDataException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.nio.channels.SocketChannel;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+public class LogoutClientCommandTest {
+
+    private static final String LOGOUT_COMMAND = "logout";
+    private static final String NOT_NULL_RESULT_MESSAGE = "Result should not be null!";
+
+    private ClientResources mockClientResources;
+    private AudioClient mockAudioClient;
+
+    private LogoutClientCommand command;
+
+    ChannelDataWriter mockWriter;
+    ChannelDataLoader mockLoader;
+
+    @BeforeEach
+    void setUp() {
+        mockClientResources = mock(ClientResources.class);
+        SocketChannel mockSocket = mock(SocketChannel.class);
+        when(mockClientResources.getClientChannel()).thenReturn(mockSocket);
+
+        mockAudioClient = mock(AudioClient.class);
+
+        mockWriter = mock(ChannelDataWriter.class);
+        mockLoader = mock(ChannelDataLoader.class);
+        command = new LogoutClientCommand(LOGOUT_COMMAND, mockClientResources, mockWriter, mockLoader);
+    }
+
+    @Test
+    void testExecuteWithValidArguments() {
+        when(mockClientResources.getAudioClient()).thenReturn(mockAudioClient);
+        String result = commandExecute();
+
+        verify(mockClientResources).setClientLogged(false);
+        verify(mockAudioClient).stopStreaming();
+        assertNotNull(result, NOT_NULL_RESULT_MESSAGE);
+    }
+
+    @Test
+    void testExecuteWithInvalidArguments() {
+        String userInput = LOGOUT_COMMAND + " parameter";
+        command.setUserInput(userInput);
+        when(mockClientResources.getAudioClient()).thenReturn(mockAudioClient);
+
+        String result = commandExecute();
+
+        verify(mockClientResources, never()).setClientLogged(false);
+        verify(mockAudioClient, never()).stopStreaming();
+        assertNotNull(result, NOT_NULL_RESULT_MESSAGE);
+    }
+
+    private String commandExecute() {
+        String result = null;
+        try {
+            when(mockLoader.loadData()).thenReturn("text");
+            result = command.execute();
+        } catch (DeserializationDataException | ChannelCommunicationException e) {
+            fail("The login operation cannot be executed!");
+        }
+
+        return result;
+    }
+}
