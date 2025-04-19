@@ -3,6 +3,7 @@ package bg.sofia.uni.fmi.mjt.spotify.client;
 import bg.sofia.uni.fmi.mjt.spotify.client.audio.AudioClient;
 import bg.sofia.uni.fmi.mjt.spotify.client.resources.ClientResources;
 import bg.sofia.uni.fmi.mjt.spotify.command.CommandExecutor;
+import bg.sofia.uni.fmi.mjt.spotify.command.commands.client.ClientCommandInvoker;
 import bg.sofia.uni.fmi.mjt.spotify.exception.checked.ChannelCommunicationException;
 
 import java.io.IOException;
@@ -20,11 +21,10 @@ public class SpotifyClient {
 
     private final ClientResources clientResources;
 
-    private final CommandExecutor commandExecutor;
+    private CommandExecutor commandExecutor;
 
     public SpotifyClient() {
         clientResources = new ClientResources();
-        commandExecutor = new CommandExecutor(clientResources);
     }
 
     public void start() {
@@ -33,6 +33,7 @@ public class SpotifyClient {
 
             System.out.println("Connected to the server!");
             this.clientResources.setClientChannel(clientChannel);
+            commandExecutor = new CommandExecutor(clientResources, new ClientCommandInvoker(clientResources));
 
             runClientLoop();
 
@@ -73,5 +74,3 @@ public class SpotifyClient {
     }
 
 }
-
-
