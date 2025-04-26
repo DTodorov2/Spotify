@@ -1,6 +1,8 @@
-Except the txt file with the songs, the song files with extension .wav will be in this folder as well.
+### Song Files
 
-The song file must have the following format:
+In addition to the `.txt` file containing the song list, all song files should be stored in this folder with the `.wav` extension.
 
-StandStill.wav    
-BillieJean.wav
+Each song file must follow the naming format:
+
+- `StandStill.wav`
+- `BillieJean.wav`
