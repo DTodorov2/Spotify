@@ -1,4 +1,22 @@
-The songs in the app will be here. (wav format and the title must be without spaces).
-Example:
-StandStill.wav
-BillieJean.wav
+{
+  "ModernLove": {
+    "title": "Modern Love",
+    "artist": "Manuel Riva",
+    "playCount": 1
+  },
+  "BillieJean": {
+    "title": "Billie Jean",
+    "artist": "Michael Jackson",
+    "playCount": 0
+  },
+  "StandStill": {
+    "title": "Stand Still",
+    "artist": "Mara",
+    "playCount": 4
+  },
+  "Crickets": {
+    "title": "Crickets",
+    "artist": "Sound Effect",
+    "playCount": 6
+  }
+}
