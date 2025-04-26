@@ -1,4 +1,4 @@
-# Spotify Clone - Music Streaming Platform
+# Spotify - Music Streaming Platform :notes:
 
 ## Project Description
 
