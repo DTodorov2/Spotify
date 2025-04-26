@@ -11,7 +11,7 @@ The application will allow users to stream music in real-time, manage playlists,
 
 ### 1. **User Authentication**
 - Users can **register** and **log in** to the platform using their email and password.
-- User credentials will be securely stored in a file system, using the SHA256 algorithm.
+- User credentials will be securely stored in JSON format in a file system, using the SHA256 algorithm.
 
 ### 2. **Song Management**
 - The server will host a collection of songs in the **.wav** format for streaming.
