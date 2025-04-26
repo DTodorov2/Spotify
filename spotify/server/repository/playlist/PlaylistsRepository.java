@@ -17,7 +17,7 @@ public class PlaylistsRepository extends StringKeyBaseRepositoryImpl<Playlist> {
     @Override
     public void loadData(Path filePath) throws LoadingDataFromFileException {
         validateFilePath(filePath);
-        loadDataWithCurrentValueClass(filePath, Playlist.class);
+        setMap(loadDataWithCurrentValueClass(filePath, Playlist.class));
     }
 
     public void saveData(Path filePath) throws SavingDataToFileException {
