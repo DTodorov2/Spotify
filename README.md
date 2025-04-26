@@ -1,102 +1,51 @@
-# Spotify :notes:
+# Spotify Clone - Music Streaming Platform
 
-[`Spotify`](https://www.spotify.com/) е платформа за `stream`-ване на музика, която предоставя на потребителите достъп до милиони песни на изпълнители от цял свят.
+## Project Description
 
-> `Stream`-ването е метод за предаване на данни, използван обикновено за мултимедийни файлове. При него възпроизвеждането на съдържанието върху устройството на потребителя започва още с достъпването му, без да се налага то отначало да бъде изтеглено изцяло като файл и после да се стартира в подходящ плеър. Предаването на данните протича едновременно с възпроизвеждането, затова е необходима постоянна мрежова свързаност.
+This project aims to create a **client-server** application inspired by the popular music streaming platform **Spotify**.    
+The application will allow users to stream music in real-time, manage playlists, and interact with a rich library of songs through a command-line interface.
 
-## Условие
+---
 
-Създайте приложение по подобие на `Spotify`, състоящо се от две части - сървър и клиент.
+## Features
 
-### **Spotify Server**
+### 1. **User Authentication**
+- Users can **register** and **log in** to the platform using their email and password.
+- User credentials will be securely stored in a file system, using the SHA256 algorithm.
 
-Предоставя следните функционалности на клиента:
-- регистриране в платформата чрез **email** и **парола** (**потребителите трябва да се съхраняват във файл**)
-- login в платформата чрез **email** и **парола**
-- съхраняване на набор от песни, достъпни на потребителите за слушане
-- търсене на песни
-- създаване на статистика на най-слушаните песни от потребителите
-- създаване на плейлисти (**плейлистите трябва да се съхраняват във файлове**)
-- добавяне на песни към плейлисти
-- връщане на информация за даден плейлист
-- `stream`-ване на песни
+### 2. **Song Management**
+- The server will host a collection of songs in the **.wav** format for streaming.
+- The server will provide song metadata, such as title, artist and playings count, and allow users to search for songs by keywords present in the song name or artist.
 
-### **Spotify Client**
+### 3. **Real-Time Streaming**
+- The client will stream songs from the server using **SourceDataLine** for real-time audio playback, utilizing **javax.sound.sampled**.
+- Song data will be streamed in real-time, with the ability to play audio directly on the client without fully downloading the file beforehand.
 
-`Spotify` клиентът трябва да има `command line interface` със следните команди:
+### 4. **Playlist Management**
+- Users can create, remove, manage, and customize **playlists**, which will be saved in files.
+- Users can add songs to their playlists and view the contents of any playlist.
+- Users can remove songs from their playlists.
 
-```bash
-register <email> <password>
-login <email> <password>
-disconnect
-search <words> - връща всички песни, в чиито имена или имената на изпълнителите им, се среща потърсената дума (или думи)
-top <number> - връща списък с *number* от най-слушаните песни в момента, сортиран в намаляващ ред
-create-playlist <name_of_the_playlist>
-add-song-to <name_of_the_playlist> <song>
-show-playlist <name_of_the_playlist>
-play <song>
-stop
-```
+### 5. **Top Charts**
+- The server will maintain statistics on the most played songs and generate **top charts** that can be accessed by the client.
 
-## Забележки:
+### 6. **Command-Line Interface**
+The client will feature a simple and intuitive command-line interface with the following commands:
+- `register <email> <password>` - Register a new user.
+- `login <email> <password>` - Log in to an existing user account.
+- `logout` - Log out from the current account.
+- `disconnect` - Disconnect from the server.
+- `search <keywords>` - Search for songs by name or artist.
+- `top <number>` - Retrieve a list of the most popular songs.
+- `create-playlist <name>` - Create a new playlist.
+- `remove-playlist <name>` - Remove a specified playlist.
+- `add-song-to <playlist_name> <song>` - Add a song to a specified playlist.
+- `remove-song-from <playlist_name> <song>` - Remove a song from a specified playlist.
+- `show-playlist <name>` - Show the contents of a playlist.
+- `play <song>` - Play a song from the library.
+- `stop` - Stop playing the song.
+- `show-all-commands` - Show every possible command the user can execute.
 
-1. За да можете да изпълнявате песни от `Spotify` клиента, използвайте API-то `javax.sound.sampled`.
-2. `javax.sound.sampled` работи само с файлове във [wav](https://en.wikipedia.org/wiki/WAV) формат, затова всички песни, които имате на сървъра, трябва да са **.wav**
-3. `javax.sound.sampled` предоставя два начина за възпроизвеждане на музика - чрез `Clip` и `SourceDataLine`. `Clip` се използва когато имаме `non-real-time` музикални данни (файл), които могат да бъдат предварително заредени в паметта.
-`SourceDataLine` се използва за `stream`-ване на данни, като например голям музикален файл, който не може да се зареди в паметта наведнъж, или за данни, които предварително не са известни. (за повече информация [тук](https://docs.oracle.com/javase/tutorial/sound/playing.html))
-
-    За целите на проекта, трябва да използвате `SourceDataLine`.
-	1. За да създадем [`SourceDataLine`](https://docs.oracle.com/en/java/javase/23/docs/api/java.desktop/javax/sound/sampled/SourceDataLine.html) първо трябва да знаем конкретния формат на данните, които ще получаваме по мрежата. Това става с класа [`AudioFormat`](https://docs.oracle.com/en/java/javase/23/docs/api/java.desktop/javax/sound/sampled/AudioFormat.html). За да успеем да възпроизведем дадена песен при клиента, трябва предварително да знаем какъв е този формат.
-	
-	2. Преди сървърът да започне да ни `stream`-ва  песента, той трябва да ни даде(прати) информация за формата на данните. Класът `AudioFormat` не е `Serializable`, т.е не можем да изпратим на клиента директно обект от тип `AudioFormat`.
-	
-	3. За да вземем формата на песента на сървъра, можем да използваме следния код:
-        ```java
-        AudioFormat audioFormat = AudioSystem.getAudioInputStream(new File(song)).getFormat();
-        ```
-	
-	4. Данните, които са необходими на клиента, са всички полета от конструктора на `AudioFormat`. Те могат да бъдат достъпени чрез съответните `getter` методи:
-        ```java
-        AudioFormat(AudioFormat.Encoding encoding, float sampleRate, int sampleSizeInBits, int channels, int frameSize, float frameRate, boolean bigEndian)
-        ```
-	
-	5. След като сървърът е изпратил формата на данните, клиентът вече е готов да създаде съответния `SourceDataLine` обект, чрез който ще се възпроизвежда песента.
-        ```java
-        Encoding encoding = ...;
-        int sampleRate = ...;
-        ...
-        AudioFormat format = new AudioFormat(encoding, sampleRate, sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
-        DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
-
-        SourceDataLine dataLine = (SourceDataLine) AudioSystem.getLine(info);
-        dataLine.open();
-        dataLine.start(); // Имайте предвид, че SourceDataLine.start() пуска нова нишка. За повече информация, може да проверите имплементацията.
-        ```
-    6. За да запишем данни в `SourceDataLine` обекта (данните, които искаме да възпроизведем) използваме следния метод:
-	    ```java
-	    dataLine.write(byte[] b, int off, int len);
-	    ```
-    
-    7. За тестови цели, можем да си пуснем песен (non-real-time) със следния код:
-    
-        ```java
-        AudioInputStream stream = AudioSystem.getAudioInputStream(new File("<music>.wav"));
-        SourceDataLine dataLine = AudioSystem.getSourceDataLine(stream.getFormat());
-        dataLine.open();
-        dataLine.start();
-        
-        while (true);
-        ```
-  4. Валидирайте по подходящ начин командите
-  5. При възникване на програмна грешка, извеждайте в конзолата смислени съобщения на потребителя - не се предполага клиентът да има умения да `troubleshoot`-ва `exception`-и, затова `printStackTrace()` не е добър вариант. Хврълените `exception`-и записвайте във файл.
-
-## Съобщения за грешки
-
-При неправилно използване на програмата, на потребителя да се извеждат подходящи съобщения за грешка.
-
-При възникване програмна грешка, на потребителя да се извежда само уместна за него информация. Техническа информация за самата грешка и stackтraces да се записват във файл на файловата система - няма определен формат за записване на грешката.
-
-Например, нерелевантно е при команда на потребител и възникнал проблем с мрежовата комуникация, да се изписва грешка от вида на "IO exception occurred: connection reset", по-подходящо би било "Unable to connect to the server. Try again later or contact administrator by providing the logs in <path_to_logs_file>".
-
-При възникване на програмна грешка от страна на сървъра, подходящо съобщение се изписва на конзолата и във файл, като освен това, във файла се записва допълнителна информация (например, при заявка на кой потребител е възникнала грешката, ако въобще е обвързана с потребителско взаимодействие) и stacktraces.
-
+### 7. **Error Handling and Logging**
+- Proper error messages will be displayed to the user when invalid commands are entered or when issues arise, such as connection failures or problems with the server.
+- Detailed **error logs** will be kept in files for troubleshooting and further development.
