@@ -3,7 +3,23 @@
     "email": "dani_todorov2@abv.bg",
     "password": "8c5a0e90561a734d610b6a2eb39f65acaddc809a792e2fceac0797b8c3fb47eb",
     "playlistsRepository": {
-      "entities": {}
+      "entities": {
+        "playlist1": {
+          "name": "playlist1",
+          "songs": {
+            "Crickets": {
+              "title": "Crickets",
+              "artist": "Sound Effect",
+              "playCount": 6
+            },
+            "Stand Still": {
+              "title": "Stand Still",
+              "artist": "Mara",
+              "playCount": 4
+            }
+          }
+        }
+      }
     }
   }
 }
